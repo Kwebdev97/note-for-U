@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Teacher's Day</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --board: #21312B;
+    --board-2: #2A3C34;
+    --board-edge: #16211C;
+    --chalk-white: #F2ECD9;
+    --chalk-yellow: #E4B95A;
+    --chalk-coral: #E2795A;
+    --chalk-blue: #8FB6C4;
+    --paper: #FBF8F1;
+    --ink: #2E2A24;
+    --ink-soft: #7A7568;
+    --wa-bg: #EDE7DC;
+  }
+
+  *{ box-sizing: border-box; }
+
+  html, body{
+    margin:0; padding:0;
+    min-height:100vh;
+    background: var(--wa-bg);
+    font-family: 'Inter', sans-serif;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    overflow-x:hidden;
+  }
+
+  .stage{
+    width:100%;
+    max-width:400px;
+    padding: 32px 20px;
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+  }
+
+  /* ---------- Phase 1: looks like a normal message ---------- */
+
+  .msg-row{
+    display:flex;
+    justify-content:flex-end;
+    transition: opacity .5s ease, transform .5s ease;
+  }
+
+  .msg-row.hidden{
+    opacity:0;
+    transform: translateY(-10px);
+    pointer-events:none;
+    height:0;
+    overflow:hidden;
+  }
+
+  .bubble{
+    background: var(--paper);
+    color: var(--ink);
+    border-radius: 14px 14px 4px 14px;
+    padding: 12px 14px;
+    max-width: 78%;
+    font-size: 15px;
+    line-height:1.45;
+    cursor:pointer;
+    box-shadow: 0 1px 2px rgba(0,0,0,.12);
+    position:relative;
+    transition: transform .15s ease;
+  }
+
+  .bubble:active{ transform: scale(.97); }
+
+  .bubble .tap-hint{
+    display:block;
+    margin-top:6px;
+    font-size:12px;
+    color: var(--ink-soft);
+  }
+
+  .bubble .ticks{
+    display:block;
+    text-align:right;
+    font-size:11px;
+    color: var(--ink-soft);
+    margin-top:4px;
+  }
+
+  /* ---------- Phase 2: the reveal ---------- */
+
+  .reveal{
+    margin-top: 18px;
+    perspective: 1200px;
+  }
+
+  .board{
+    background:
+      radial-gradient(ellipse at 30% 20%, var(--board-2), var(--board) 70%);
+    border: 10px solid var(--board-edge);
+    border-radius: 10px;
+    padding: 34px 26px 30px;
+    text-align:center;
+    box-shadow: 0 18px 40px rgba(0,0,0,.22);
+    opacity:0;
+    transform: scale(.9) rotateX(8deg);
+    transition: opacity .5s ease, transform .5s ease;
+  }
+
+  .board.show{
+    opacity:1;
+    transform: scale(1) rotateX(0deg);
+  }
+
+  .doodles{
+    display:flex;
+    justify-content:center;
+    gap:22px;
+    margin-bottom:6px;
+  }
+
+  .doodles svg{
+    width:38px; height:38px;
+    stroke: var(--chalk-white);
+    fill:none;
+    stroke-width:2.4;
+    stroke-linecap:round;
+    stroke-linejoin:round;
+    opacity:.9;
+  }
+
+  .doodles svg path, .doodles svg circle{
+    stroke-dasharray: 140;
+    stroke-dashoffset: 140;
+  }
+
+  .board.show .doodles svg path,
+  .board.show .doodles svg circle{
+    animation: draw 1.1s ease forwards;
+  }
+
+  .doodles svg:nth-child(1) path{ animation-delay: .5s !important; }
+  .doodles svg:nth-child(2) path{ animation-delay: .7s !important; }
+  .doodles svg:nth-child(3) path{ animation-delay: .9s !important; }
+
+  @keyframes draw{
+    to{ stroke-dashoffset: 0; }
+  }
+
+  .headline{
+    font-family:'Kalam', cursive;
+    font-weight:700;
+    color: var(--chalk-white);
+    font-size: 30px;
+    line-height:1.2;
+    margin: 10px 0 4px;
+    opacity:0;
+    transform: translateY(6px);
+  }
+
+  .board.show .headline{
+    animation: chalkIn .6s ease forwards .9s;
+  }
+
+  .underline{
+    width:0;
+    height:3px;
+    background: var(--chalk-coral);
+    margin: 6px auto 18px;
+    border-radius:2px;
+  }
+
+  .board.show .underline{
+    animation: growLine .5s ease forwards 1.4s;
+  }
+
+  @keyframes growLine{
+    to{ width:120px; }
+  }
+
+  .note{
+    font-family:'Kalam', cursive;
+    color: var(--chalk-blue);
+    font-size: 17px;
+    line-height:1.65;
+    max-width: 280px;
+    margin: 0 auto;
+    opacity:0;
+  }
+
+  .board.show .note{
+    animation: chalkIn .7s ease forwards 1.6s;
+  }
+
+  .sign{
+    font-family:'Kalam', cursive;
+    color: var(--chalk-yellow);
+    font-size: 19px;
+    margin-top: 20px;
+    opacity:0;
+  }
+
+  .board.show .sign{
+    animation: chalkIn .6s ease forwards 2.2s;
+  }
+
+  @keyframes chalkIn{
+    0%{ opacity:0; transform: translateY(6px); filter: blur(2px); }
+    100%{ opacity:1; transform: translateY(0); filter: blur(0); }
+  }
+
+  .replay{
+    display:block;
+    margin: 26px auto 0;
+    background:none;
+    border: 1px solid rgba(242,236,217,.35);
+    color: var(--chalk-white);
+    font-family:'Inter', sans-serif;
+    font-size: 12.5px;
+    padding: 7px 16px;
+    border-radius: 20px;
+    cursor:pointer;
+    opacity:0;
+  }
+
+  .board.show .replay{
+    animation: chalkIn .5s ease forwards 2.6s;
+  }
+
+  .replay:active{ transform: scale(.96); }
+</style>
+</head>
+<body>
+
+<div class="stage">
+
+  <div class="msg-row" id="msgRow">
+    <div class="bubble" id="bubble">
+      You've got a message 💌
+      <span class="tap-hint">Tap to open</span>
+      <span class="ticks">9:14 AM ✓✓</span>
+    </div>
+  </div>
+
+  <div class="reveal">
+    <div class="board" id="board">
+      <div class="doodles">
+        <svg viewBox="0 0 40 40"><path d="M20 8c-1-3-4-4-6-2 3 0 4 2 4 4-5 0-9 4-9 10 0 6 5 11 11 11s11-5 11-11c0-6-4-10-9-10 0-2 1-4 4-4-2-2-5-1-6 2z"/></svg>
+        <svg viewBox="0 0 40 40"><path d="M6 8h13a3 3 0 0 1 3 3v21a2 2 0 0 0-2-2H6z"/><path d="M34 8H21a3 3 0 0 0-3 3v21a2 2 0 0 1 2-2h14z"/></svg>
+        <svg viewBox="0 0 40 40"><path d="M8 30 26 12l4 4L12 34l-6 2z"/><path d="M23 15l4 4"/></svg>
+      </div>
+
+      <div class="headline">Happy Teacher's Day!</div>
+      <div class="underline"></div>
+
+      <div class="note">
+        Those who show us the way quietly stay a step behind, always.<br><br>
+        Thank you for every lesson you've taught.
+      </div>
+
+      <div class="sign">— Khalid</div>
+
+      <button class="replay" id="replay">Watch again</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  const msgRow = document.getElementById('msgRow');
+  const board = document.getElementById('board');
+  const replay = document.getElementById('replay');
+
+  msgRow.remove();
+
+  function open(){
+    board.classList.add('show');
+  }
+
+  function reset(){
+    board.classList.remove('show');
+  }
+
+  replay.addEventListener('click', ()=>{ reset(); setTimeout(open, 400); });
+
+  window.addEventListener('load', ()=>{ setTimeout(open, 300); });
+</script>
+
+</body>
+</html>
